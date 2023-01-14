@@ -9,11 +9,7 @@ import Loader from "../public/loader.json";
 const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const [inputText, setInputText] = useState("");
-  // const fetcher = (url) => fetch(url).then((res) => res.json());
-  // const { data, mutate, error } = useSwr("/api/completion", fetcher);
-  // if (error) return <div>Failed to Load</div>;
-  // if (!data) return <div>Loading...</div>;
-  // const dataToShow = data?.response?.choices[0]?.text;
+
   const [loading, setLoading] = useState(false);
   const [dataToShow, setDataToShow] = useState("");
 
