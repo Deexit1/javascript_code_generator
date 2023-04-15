@@ -48,7 +48,6 @@ export default function Home() {
     setLoading(false);
     setDataToShow(data);
   };
-
   return (
     <div className={classes.wrapper}>
       <div className={classes.heading}>
