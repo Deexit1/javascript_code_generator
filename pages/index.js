@@ -19,7 +19,7 @@ export default function Home() {
   const [dataToShow, setDataToShow] = useState("");
 
   const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: "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",
   });
   const openai = new OpenAIApi(configuration);
 
