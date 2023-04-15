@@ -1,71 +1,55 @@
-import { Inter } from "@next/font/google";
-import classes from "../styles/Home.module.css";
-import Highlight from "react-highlight";
-import { useState } from "react";
-import { Configuration, OpenAIApi } from "openai";
-import Lottie from "lottie-react";
-import Loader from "../public/loader.json";
+import React, { useState } from "react";
+import classes from "../styles/index.module.css";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
-const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
-  const [inputText, setInputText] = useState("");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const [loading, setLoading] = useState(false);
-  const [dataToShow, setDataToShow] = useState("");
-
-  console.log(process.env.SECRET_KEY);
-  const configuration = new Configuration({
-    apiKey: process.env.SECRET_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
-
-  const handleChange = (e) => setInputText(e.target.value);
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `${inputText} in js`,
-      temperature: 0,
-      max_tokens: 256,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-    setLoading(false);
-    setDataToShow(response.data.choices[0].text);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!email || !password) {
+      setError("Email & password is required");
+    } else {
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        setError("Email is invalid");
+      } else {
+        Cookies.set("email", email);
+        Cookies.set("password", password);
+        router.push("/code");
+      }
+    }
   };
-
   return (
-    <div className={classes.box}>
-      <div className={classes.form}>
-        <h3 className={classes.heading}>Get desired javascript code</h3>
-        <textarea
-          className={classes.text}
-          value={inputText}
-          onChange={handleChange}
-          rows="4"
-          placeholder="Get a function snippet"
+    <div className={classes.login_form}>
+      <h2 className={classes.heading}>Login</h2>
+      <div className={classes.form_group}>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
         />
-        <button
-          type="submit"
-          className={classes.button}
-          onClick={() => handleSubmit()}
-          disabled={loading}
-        >
-          Get Code
-        </button>
       </div>
-      <div className={classes.code}>
-        {loading && (
-          <Lottie animationData={Loader} className={classes.loader} />
-        )}
-        {!loading && (
-          <Highlight className={classes.codespace} language="javascript">
-            {dataToShow}
-          </Highlight>
-        )}
+      <div className={classes.form_group}>
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        {error && <div className={classes.error_message}>{error}</div>}
       </div>
+      <button type="submit" onClick={handleSubmit}>
+        Sign in
+      </button>
     </div>
   );
 }
